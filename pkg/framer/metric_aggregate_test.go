@@ -2,7 +2,7 @@ package framer
 
 import (
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/models"
-	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"testing"
@@ -25,7 +25,13 @@ func TestMetricAggregate_Frames(t *testing.T) {
 							Name:   "field_1",
 							Labels: []*pb.Label{{Key: "zone", Value: "a"}},
 							Config: nil,
-							Values: []float64{10},
+							Values: []*pb.MetricValue{
+								{
+									Value: &pb.MetricValue_DoubleValue{
+										DoubleValue: 10,
+									},
+								},
+							},
 						},
 					},
 				},
@@ -39,7 +45,13 @@ func TestMetricAggregate_Frames(t *testing.T) {
 							Name:   "",
 							Labels: nil,
 							Config: nil,
-							Values: []float64{20},
+							Values: []*pb.MetricValue{
+								{
+									Value: &pb.MetricValue_DoubleValue{
+										DoubleValue: 20,
+									},
+								},
+							},
 						},
 					},
 				},
