@@ -3,7 +3,7 @@ package framer
 import (
 	fields2 "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/framer/fields"
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/models"
-	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
@@ -40,8 +40,34 @@ func convertToDataFieldLabels(labels []*pb.Label) data.Labels {
 	return dataLabels
 }
 
+func convertFloatValues(fld *pb.Field) []float64 {
+	values := make([]float64, len(fld.Values))
+	for i, v := range fld.Values {
+		values[i] = v.GetDoubleValue()
+	}
+
+	return values
+}
+
+func convertStringValues(fld *pb.Field) []string {
+	values := make([]string, len(fld.Values))
+	for i, v := range fld.Values {
+		values[i] = v.GetStringValue()
+	}
+
+	return values
+}
+
 func convertValues(fld *pb.Field) interface{} {
-	return fld.Values
+	if len(fld.Values) == 0 {
+		return []float64{}
+	}
+
+	if fld.Values[0].GetStringValue() != "" {
+		return convertStringValues(fld)
+	}
+
+	return convertFloatValues(fld)
 }
 
 type framesResponse interface {
@@ -51,7 +77,7 @@ type framesResponse interface {
 }
 
 func convertToDataFrames(response framesResponse) data.Frames {
-	if response == nil {
+	if response == nil || response.GetFrames() == nil {
 		return data.Frames{}
 	}
 

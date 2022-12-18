@@ -2,7 +2,7 @@ package framer
 
 import (
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/models"
-	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"time"
 )
@@ -30,9 +30,14 @@ func (f MetricValue) Frames() (data.Frames, error) {
 		for idx := range metricFrame.Fields {
 			fld := metricFrame.Fields[idx]
 
-			dataField := data.NewField(fld.Name, convertToDataFieldLabels(fld.Labels), []float64{fld.Value})
-			dataField.SetConfig(convertToDataFieldConfig(fld.Config, f.FormatDisplayName(metricFrame, fld)))
+			var dataField *data.Field
+			if fld.Value.GetStringValue() == "" {
+				dataField = data.NewField(fld.Name, convertToDataFieldLabels(fld.Labels), []float64{fld.Value.GetDoubleValue()})
+			} else {
+				dataField = data.NewField(fld.Name, convertToDataFieldLabels(fld.Labels), []string{fld.Value.GetStringValue()})
+			}
 
+			dataField.SetConfig(convertToDataFieldConfig(fld.Config, f.FormatDisplayName(metricFrame, fld)))
 			fields = append(fields, dataField)
 		}
 

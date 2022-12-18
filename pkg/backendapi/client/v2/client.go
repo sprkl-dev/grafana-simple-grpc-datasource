@@ -1,10 +1,19 @@
 package v2
 
 import (
-	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	v2 "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	v3 "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"google.golang.org/grpc"
 )
 
-func NewClient(conn *grpc.ClientConn) (v2.GrafanaQueryAPIClient, error) {
-	return v2.NewGrafanaQueryAPIClient(conn), nil
+type ClientOptions struct {
+	V2Client v2.GrafanaQueryAPIClient
+}
+
+func NewClient(conn *grpc.ClientConn, opts ClientOptions) (v3.GrafanaQueryAPIClient, error) {
+	if opts.V2Client == nil {
+		opts.V2Client = v2.NewGrafanaQueryAPIClient(conn)
+	}
+
+	return &adapter{v2Client: opts.V2Client}, nil
 }

@@ -3,7 +3,7 @@ package connector
 import (
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/backendapi/client"
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/framer"
-	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"context"
 	"fmt"
 	"google.golang.org/protobuf/types/known/timestamppb"
