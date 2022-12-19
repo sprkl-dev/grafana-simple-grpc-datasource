@@ -8,6 +8,7 @@ import (
 )
 
 func NewClient(conn *grpc.ClientConn) (v3.GrafanaQueryAPIClient, error) {
+	// INFO: using adapter from v1 to v2 and adapter from v2 to v3 (v1 -> v2 -> v3)
 	v2c := &adapter{v1Client: v1.NewGrafanaQueryAPIClient(conn)}
 	return v2client.NewClient(conn, v2client.ClientOptions{V2Client: v2c})
 }
