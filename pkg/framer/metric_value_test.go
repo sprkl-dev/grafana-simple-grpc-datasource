@@ -2,7 +2,7 @@ package framer
 
 import (
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/models"
-	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"testing"
@@ -27,7 +27,9 @@ func TestMetricValue_Frames(t *testing.T) {
 								},
 							},
 							Config: nil,
-							Value:  10,
+							Value: &pb.MetricValue{
+								Value: &pb.MetricValue_DoubleValue{DoubleValue: 10},
+							},
 						},
 					},
 					Timestamp: timestamppb.New(ts),
@@ -36,7 +38,9 @@ func TestMetricValue_Frames(t *testing.T) {
 					Metric: "bar",
 					Fields: []*pb.SingleValueField{
 						{
-							Value: 20,
+							Value: &pb.MetricValue{
+								Value: &pb.MetricValue_DoubleValue{DoubleValue: 20},
+							},
 						},
 					},
 					Timestamp: timestamppb.New(ts),

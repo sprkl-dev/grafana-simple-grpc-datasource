@@ -2,7 +2,7 @@ package framer
 
 import (
 	"bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/models"
-	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v2"
+	pb "bitbucket.org/innius/grafana-simple-grpc-datasource/pkg/proto/v3"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -18,7 +18,17 @@ func TestGetHistoryResponseFrameConversion(t *testing.T) {
 			{
 				Name:   "v1",
 				Labels: nil,
-				Values: []float64{10, 20, 30},
+				Values: []*pb.MetricValue{
+					{
+						Value: &pb.MetricValue_DoubleValue{DoubleValue: 10},
+					},
+					{
+						Value: &pb.MetricValue_DoubleValue{DoubleValue: 20},
+					},
+					{
+						Value: &pb.MetricValue_DoubleValue{DoubleValue: 30},
+					},
+				},
 			},
 		},
 	}
@@ -59,7 +69,11 @@ func TestMetricHistory_Frames(t *testing.T) {
 							Config: &pb.Config{
 								Unit: "℃",
 							},
-							Values: []float64{10},
+							Values: []*pb.MetricValue{
+								{
+									Value: &pb.MetricValue_DoubleValue{DoubleValue: 10},
+								},
+							},
 						},
 					},
 					Timestamps: []*timestamppb.Timestamp{timestamppb.New(ts)},
@@ -71,7 +85,11 @@ func TestMetricHistory_Frames(t *testing.T) {
 							Name:   "",
 							Labels: nil,
 							Config: nil,
-							Values: []float64{20},
+							Values: []*pb.MetricValue{
+								{
+									Value: &pb.MetricValue_DoubleValue{DoubleValue: 20},
+								},
+							},
 						},
 					},
 					Timestamps: []*timestamppb.Timestamp{timestamppb.New(ts)},
